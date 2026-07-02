@@ -16,7 +16,7 @@ To use any of these methods please
 
 #### Using the Zip File (<span style="color: Green">Recommended</span>)
 1. Enable the "Developer Mode"
-2. [Download](https://github.com/akhanal47/replace-words-extn/releases) and save ```archive-web-page.zip``` file then unzip it to your desired location.
+2. [Download](https://github.com/akhanal47/replace-words-extn/releases) and save ```replace-words-extension.zip``` file then unzip it to your desired location.
 3. Select "Load Unpacked" button & select the folder where you unzipped the extension files.
 
 #### Cloing the Repo
