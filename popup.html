@@ -8,15 +8,24 @@
   </head>
   <body>
     <main>
-      <button id="enabled-toggle" class="toggle" type="button" aria-pressed="true">
-        <span>Word Replacer</span>
-        <strong>ON</strong>
-      </button>
+      <header class="header">
+        <h1 id="enabled-status">Replacement: ON</h1>
+        <button id="enabled-toggle" class="toggle-row" type="button" aria-pressed="true">
+          <span class="track" aria-hidden="true">
+            <span class="knob"></span>
+          </span>
+        </button>
+      </header>
 
       <form id="replacement-form">
         <input id="find" type="text" placeholder="Word to replace" autocomplete="off" required>
         <input id="replace" type="text" placeholder="Replacement" autocomplete="off">
         <button type="submit">Add</button>
+      </form>
+
+      <form id="bulk-form" class="bulk-form">
+        <textarea id="bulk-replacements" placeholder="word:replacement word" rows="4"></textarea>
+        <button type="submit">Import</button>
       </form>
 
       <ul id="replacement-list" aria-label="Replacement words"></ul>
