@@ -1,0 +1,75 @@
+name: Build and Release Replace Words Extension
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'manifest.json'
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    name: Check Manifest Version
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check_version_update.outputs.should_release }}
+      version: ${{ steps.check_version_update.outputs.version }}
+    steps:
+      - name: Checkout code (previous and current)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Compare manifest.json versions
+        id: check_version_update
+        run: |
+          NEW_VERSION=$(grep -o '"version": "[^"]*"' manifest.json | cut -d'"' -f4)
+          if [ -z "$NEW_VERSION" ]; then exit 1; fi
+
+          if git cat-file -e HEAD~1 &>/dev/null; then
+            OLD_VERSION=$(git show HEAD~1:manifest.json 2>/dev/null | grep -o '"version": "[^"]*"' | cut -d'"' -f4 || echo "")
+            if [ "$NEW_VERSION" != "$OLD_VERSION" ]; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            else
+              echo "should_release=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            # for 1st commits, always run
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+  build-and-release:
+    name: Build and Release Extension
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Define Package Name
+        id: package_name
+        run: echo "name=replace-words-extension" >> $GITHUB_OUTPUT
+
+      - name: Create Zip Archive
+        run: |
+          zip -r ${{ steps.package_name.outputs.name }}.zip \
+            manifest.json \
+            content.js \
+            popup.html \
+            popup.css \
+            popup.js
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release v${{ needs.check-version.outputs.version }}
+          tag_name: v${{ needs.check-version.outputs.version }}
+          fail_on_unmatched_files: true
+          files: |
+            ${{ steps.package_name.outputs.name }}.zip

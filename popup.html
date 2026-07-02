@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Replacer</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <button id="enabled-toggle" class="toggle" type="button" aria-pressed="true">
+        <span>Word Replacer</span>
+        <strong>ON</strong>
+      </button>
+
+      <form id="replacement-form">
+        <input id="find" type="text" placeholder="Word to replace" autocomplete="off" required>
+        <input id="replace" type="text" placeholder="Replacement" autocomplete="off">
+        <button type="submit">Add</button>
+      </form>
+
+      <ul id="replacement-list" aria-label="Replacement words"></ul>
+    </main>
+
+    <template id="replacement-template">
+      <li>
+        <span class="pair"></span>
+        <button class="remove" type="button" aria-label="Remove replacement">Remove</button>
+      </li>
+    </template>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
