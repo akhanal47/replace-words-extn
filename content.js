@@ -22,10 +22,14 @@ function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function createWholeWordRegExp(text) {
+  return new RegExp(`(?<![\\p{L}\\p{N}_])${escapeRegExp(text)}(?![\\p{L}\\p{N}_])`, "giu");
+}
+
 function replaceText(text) {
   return settings.replacements.reduce((nextText, item) => {
     if (!item.find) return nextText;
-    return nextText.replace(new RegExp(escapeRegExp(item.find), "gi"), item.replace);
+    return nextText.replace(createWholeWordRegExp(item.find), item.replace);
   }, text);
 }
 
